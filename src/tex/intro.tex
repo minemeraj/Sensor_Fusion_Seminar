@@ -67,3 +67,90 @@ There could be more categories exists but commonly used sensors are categorized 
 
 \section{Commonly used Sensor Fusion Models/Applications}
 
+\subsection{Evidential Framework}
+The Evidential framework is a generalization of the Bayesian framework of subjective probability\cite{Chavez_Garcia_2016}. Evidential theory (ET) is applicable to the problems which are ambiguous and unpredictable for finding solutions. We can apply it on uncertain problems to have a belief based on available proofs. There are two major concepts, mass function and belief function to perform uncertainty reasoning\cite{Bell_4028391}.\\
+Assume, $\Omega$ is a set of hypotheses over a hypothesis space. A function $m:2^\Omega \rightarrow[0, 1]$ is called mass function which is defined as follows\cite{Bell_4028391}:
+$$M1. m(\emptyset)=0$$
+$$M2.\sum_{x \subseteq \Omega} m(X) = 1$$
+where, $\emptyset$ is an empty set, $X$ is a variable and the assigned uncertainties are called $m-$values\cite{srivastava2011introduction}. For the variable $X$, we can have $m(x) \geq 0$, $m(\neg x) \geq 0$, and $m(\{x,\neg x\}) \geq 0$, such that $m(x) + m(\neg x) + m(\{x,\neg x\}) = 1$\cite{srivastava2011introduction}. We can have $m-$values for all the subsets of single element, double element, triple element and so on over the a hypothesis space and this hypothesis space contains all probable values of variable $X$. For example, a proof $Pr_{1}$ is $m_{1}(x)=0.8$, $m_{1}(\neg x)=0.15$ and $m_{1}(\{x,\neg x\}) = 0.05$. It means $80\%$ agree that $X$ is $\mathbb true$, $15\%$ agree that $X$ is $\mathbb false$ and $5\%$ are not sure reflecting ignorance.\\
+Another function $bel:2^\Omega \rightarrow[0, 1]$ is called belief function which is defined as follows\cite{srivastava2011introduction}:
+$$bel(O) = \sum_{C \subseteq O} m(C)$$
+where, $O$ is a set of elements which is the summation of all $m-$values of that set of elements denoted by $C$. As like probability theory it is not needed  to be $1$ the summation of belief in $O$ and belief in $\neg O$ which is actually less or equal to $1$, i.e., $bel(O) + bel(\neg O)\leq 1$\cite{srivastava2011introduction}. Zero belief, i.e., $bel(x) = 0$, and $bel(\neg x) = 0$ indicates the lack of proofs, also in other other word it indicates ignorance. For example, again consider the previous example $Pr_{1}$. In this case, $bel_{1}(x) = m_{1}(x) = 0.8$, $bel_{1}(\neg x) = m_{1}(\neg x) = 0.15$ and $bel_{1}(\{x, \neg x\}) = m_{1}(x) + m_{1}(\neg x) + m_{1}({x, \neg x}) = 0.8+0.15+0.5 = 1$.\\
+The fundamental operation of evidential reasoning is the orthogonal sum of evidential function (mass and belief function), which is known as Dempster's rule for combining proofs\cite{Bell_4028391}. The Dempster's rule to combine $m-$values can be written as (Shafer 1976) follows\cite{srivastava2011introduction}:
+ $$m(O \neq \emptyset) = \frac{1}{k}  \sum_{O=C_{1} \cap C_{2}} m_{1}(C_{1})m_{2}(C_{2})$$
+where, $K$ is the renormalization constant and 
+$$K = \sum_{C_{1} \cap C_{2} \neq \emptyset} m_{1}(C_{1})m_{2}(C_{2}) = 1-\overbrace{ \sum_{C_{1} \cap C_{2} = \emptyset} m_{1}(C_{1})m_{2}(C_{2})}^{CV}$$
+$CV$ in $K$ indicates the conflict value which is distributed among all the elements of the frame of discernment\cite{Chavez_Garcia_2016}.\\
+Generally, ET considers three situations, $\mathbb true$, $\mathbb false$ and not sure (ignorance) by which it can find solutions for ambiguous and unpredictable problems more powerfully. For example, an online shop's admin wants to know the degree of satisfaction for a delivered product $A$ from the customers. The answer from customer $C_{1}$ is $80\%$ satisfied, $15\%$ unsatisfied, $5\%$ not sure. Answer from another customer $C_{2}$ is $60\%$ satisfied, $20\%$ unsatisfied, $30\%$ not sure. Assume, a hypothesis space is, $\Omega = \{S, U\}$ where $S$ and $U$ stand for satisfiability and unsatisfiability respectively. So, we have two set of proofs for $C_{1}$ and $C_{2}$. According to ET, the combination of two proofs can be represented in Table \ref{table:customer_surv} \cite{Bell_4028391}.
+\begin{table}[]
+\centering
+\caption{Combination of two customer surveys}
+\label{table:customer_surv}
+\begin{tabular}{|l|l|l|l|}
+\hline
+ $m^{\prime}=C_{1}\oplus C_{2}$&  $m_{1}(S)=0.8$ & $m_{1}(U)=0.15$ & $m_{1}(\{S, U\})=0.5$ \\ \hline
+ $m_{2}(S)=0.6$& $0.8x0.6=0.48$ & $\emptyset$ & $0.6x0.05=0.03$ \\ \hline
+ $m_{1}(U)=0.2$& $\emptyset$ & $0.2x0.15=0.03$ & $0.2x0.05=0.01$ \\ \hline
+ $m_{1}(\{S, U\})=0.3$& $0.3x0.8=0.24$ & $0.3x0.15=0.045$ & $0.3x0.05=0.015$ \\ \hline
+\end{tabular}
+\end{table}
+By applying Dempster's rule, we get as follows:
+$$K = \sum_{C_{1} \cap C_{2} \neq \emptyset} m_{1}(C_{1})m_{2}(C_{2}) = 1- \sum_{C_{1} \cap C_{2} = \emptyset} m_{1}(C_{1})m_{2}(C_{2})$$
+$$=0.48 + 0.03 + 0.03 + 0.01 + 0.24 + 0.045 + 0.015 = 0.85$$
+$$m^{\prime}(S)=(\frac{1}{0.85})(0.48 + 0.03 + 0.24) = 0.882$$
+$$m^{\prime}(U)=(\frac{1}{0.85})(0.03+0.01+0.045) = 0.1$$
+$$m^{\prime}(\{S, U\})=(\frac{1}{0.85})(0.015) = 0.017$$
+So, the combination result is $88.2\%$ satisfied, $10\%$ unsatisfied and $1.7\%$ undecided. Authors has used this evidential approach based on mass distributions over the set of different class hypotheses\cite{Chavez_Garcia_2016}.
+
+\subsection{Kalman Filter}
+The Kalman Filter(KF) is a linear mathematical model which uses a recursive algorithm for fltering signals by measuring a respectable amount of statistical and systematical errors[1]. It was developed by Kalman and Bucy in 1960[1].KF generates a estimation of the true and measured values[2]. First, it predicts a value. Then it measures the ambiguity of previous value. Finally, it performs an weighted average of both the predicted and measured values[2].
+The more the weight is, the less the ambiguity is. The output of a KF is the estimation which is closer to true values. This is the basic operation of a KF.\\
+A standard KF model is explained by two linear equations[1]. The first equation measures the state of a system at time $k$ which is governed by the linear stochastic difference equation[2]:
+$$aaa$$
+\begin{table}[!htbp]
+\centering
+\label{my-label}
+\begin{tabular}{llll}
+where, & $bbb$     & = & a vector representing the state at time $k-1$                                                                                                                                         \\
+       & $A$       & = & non singular state transition matrix                                                                                                                                                  \\
+       & $ccc$     & = & a vector representing the input of the system at time $k-1$                                                                                                                           \\
+       & $B$       & = & The relation between $bbb$ and $ccc$                                                                                                                                                  \\
+       & $w_{k-1}$ & = & a random variable representing the process noise, \\
+       &        & & modelled as white noise $\sim N(0; Q)$, where $Q$ is the covariance matrix
+\end{tabular}
+\end{table}\\
+with a measurement which is the second equation[2]:
+$$eee$$
+\begin{table}[!htbp]
+\centering
+\label{my-label}
+\begin{tabular}{llll}
+where, & $fff$     & = & a vector representing the sensor observation at time $k$                                                                                                                                         \\
+       & $H$       & = & a matrix relates the measurements to the internal state                                                                                                                                            \\
+       & $v_{k}$ & = & a random variable representing the measurement noise, \\
+       &        & & also modelled as white noise $\sim N(0; Q)$, where $R$ is the covariance matrix
+\end{tabular}
+\end{table}
+
+\subsubsection{Kalman Filtering Algorithm}
+To start a KF, user has to give an estimation $lll$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps[1]:
+\begin{enumerate}
+  \item  Compute a predicted priori state estimation of state $xxx$ at time $k$ by using given observations up to $k-1$.
+  $$ggg$$
+  \item Compute predicted error covariance matrix at time $k$.
+  $$hhh$$
+  \item Compute Kalman gain.
+  $$iii$$
+  \item Update the estimation by a measurement $z_{k}$.
+  $$jjj$$
+  \item Update error covariance matrix.
+  $$kkk$$
+  where, $I$ is the identity matrix.
+\end{enumerate}\\
+
+After performing these 5 steps the iteration restarts again from step 1, but with $k:=k+1$.\\
+So, we can say that The equations containig in the steps of above algorithm can be divided into two groups: time update equations (equation 1 and 2) and measurement update equations(equation 3-5)[3]. Also the final estimation algorithm looks like  a predictor-corrector algorithm as shown in Figure [cycle].
+
+\subsubsection{Underlying Dynamic System Model}
+KF is based on linear and non-linear dynamical systems discretized in the time domain[3]. As shown in Figure [underlying], each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
+There are lot of dynamic systems which do not support KF as it is a linear model[2]. To deal with these type of dynamic systems Extended KF and Unscented KF are used which are the extended version KF[2].

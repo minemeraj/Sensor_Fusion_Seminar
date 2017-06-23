@@ -73,20 +73,62 @@ A composite representation is formed by two parts: kinetic + appearance\cite{Cha
 \end{description}
 
 \subsubsection{Sensor Fusion}
-Once the DATMO and object classification task is finished, the composite object representation are ready for fusion. A multi-sensor fusion framework is proposed at the detection level which not only depend on three sensors but also many sensors can be added to the framework to extend the fusion process\cite{Chavez_Garcia_2016}.
+Once the DATMO and object classification task is finished, the composite object representation are ready for fusion. A multi-sensor fusion framework is proposed at the detection level which not only depend on three sensors but also many sensors can be added to the framework to extend the fusion process\cite{Chavez_Garcia_2016}. The combination of different representation of same object at detection level increase the reliability and reduce incompleteness, uncertainty of the detection result. For fusion approach it is important that for example an object getting from three sensors are same or are associated with each other. If an object $i$ is detected in sensor $a$ and $b$ and the detected objects are presented as $a_{i}$ and $b_{i}$ respectively. After detection the following things can be happen,
+\begin{itemize}
+    \item $a_{i}$ and $b_{i}$ are the same object; i.e., P($a_{i}$, $b_{i}$) = 1
+    \item $a_{i}$ and $b_{i}$ are not the same object; i.e., P($a_{i}$, $b_{i}$) = 0
+    \item ignore the association; i.e., P($a_{i}$, $b_{i}$) = $\Omega$
+\end{itemize}
+
+The object associations can be calculated by finding the similarity measures between them. Sensor $a$ and $b$ could provide different kind of description about the object. The description could be the position, shape or appearance information such as class. The similarity can be calculated based on the position or appearance information of the detected object. After two objects are decided to be same, the fusion method combines the object representation by fusing the information received from multiple sensors\cite{Chavez_Garcia_2016}. The fused object with kinetic and appearance information, are passed to the tracking system to estimate object motion model. The objects, for which no association is found, are simply removed by the tracking process.
 
 \subsubsection{Experimental Outcome}
-
+The perception System (PS) is tested in both highway and urban area with high traffic scenarios. In both areas, all vehicles including coming ones, are detected and tracked\cite{Chavez_Garcia_2016} as shown in figure \ref{fig:Experimental_PS}. Another good thing is that it could found out the static objects as well. From the figure. \ref{fig:Experimental_PS} it is shown that the vehicle speed are also detected. It is possible only because of fused information. Radar providing the speed and direction of the vehicle where lidar gives shape information and camera gives more detailed image description like hand or leg of a pedestrian. The class of object is improved by fused information from the three different sensors.
+\begin{figure}
+  \centering
+  \includegraphics[width=1\textwidth]{src/pic/Experimental_PS.png}
+  \caption{Results of PS 1: Highway, 2: Urban Areas \cite{Chavez_Garcia_2016}}
+  \label{fig:Experimental_PS}
+\end{figure}
 
 \subsection{Multiple View Approach}
+In \cite{Cho_2014}, a previously build perception system is improved to adopted the real world driving experience. The previous perception system was designed for a robotic vehicle which could operated on a simple, urban environment setup having no obstacle objects with limited vehicle interactions \cite{Cho_2014}. But in the real world, an autonomous driver agent have to be aware of all possible risky situations such as prevent coalition with nearby pedestrians or vehicles. To have safety driving experience, it is very obvious to detect and track the moving objects. In this paper\cite{Cho_2014}, the previously developed perception system and the moving object tracking system are redesigned to ensure the safety and reliability. Even new sensors are placed in different view of the vehicle.
 
 \subsubsection{Motivation}
 
-\subsubsection{Sensors Used}
+\subsubsection{Environment Setup}
+The sensors are configured in a vehicle in a manner to track all the moving objects, cover the region around the vehicle within a certain range and take advantage of vehicle's build in sensors. According to those criteria the sensors are placed like shown in Figure \ref{fig:Sensor_Setup_Multiple_View} (a). All the sensors are set in the vehicle body in a way that the sensors are not visible from outside. Precisely, six radars, six LIDARs and three cameras are installed in the experiment vehicle. One radar is paired with a LIDARs at different height. Robust number of sensors are used to get maximum reliability with an extended range of sensor coverage. According to \cite{Cho_2014} the current setup, any object which exists in the range of 200 meters of the vehicle can be observed by any of the sensors. Any object in the range of 60 meters could be observed by at least two sensors either radar and LIDAR or radar and camera. The coverage of sensors are visualized in the Figure \ref{fig:Sensor_Setup_Multiple_View}(b). There are three cameras in three different-looking faces. One camera is installed in froward facing approach inside the front window. Another camera is installed in the rear bumper to provide the front and back side of perspective images. The third one is a thermal one which is able to sense even in night or foggy weather. Another advantage of having wide range of sensors is that the spots are small enough that no vehicle will be overlooked\cite{Cho_2014} Overall there are 14 sensors are installed in the vehicle.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1\textwidth]{src/pic/Sensor_Setup_Multiple_View.png}
+  \caption{\cite{Cho_2014}}
+  \label{fig:Sensor_Setup_Multiple_View}
+\end{figure}
+
+\subsubsection{System Architecture}
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{src/pic/Fusion_Arch_Multiple_View.png}
+  \caption{\cite{Cho_2014}}
+  \label{fig:Fusion_Arch_Multiple_View}
+\end{figure}
+The new redesigned perception system have two parts i.e., sensor and fusion layer as shown in figure \ref{fig:Fusion_Arch_Multiple_View}. Dividing the system into two independent module makes it possible to develop them independently based on an interface without knowing each others internal functionality. There is a common communication channel available for data exchange between those two modules. Each time new raw sensor data is available, reader extract features such as lines or corners and push the data to the common communication channel. The shared data is accessed any time by the higher level module i.e., fusion module. In fusion layer, the sensor measurements are processed as unit of measures where each object measured as a box model, but they are presented differently\cite{Cho_2014}. For example, a radar provides 2D position and velocity of an object. Radar data is represented in an array where time as the index of the array. Radar measurement in $k^{th}$ second  is:
+\begin{equation}
+z^{R}(k) = \{r_{1},r_{2},...,r_{p}\} \ here, r_{i} = [\mathbf {x \ y \ \dot{x} \ \dot{y}}]^{T} \ where, i = 1, ...,p
+\end{equation}
+Here, $r_{i}$ is a point position and velocity measurement with respect to the radar sensor coordinate and p is the number of radar measurements at time step $k$.
+On the other hand, LIDAR locate objects as 3D point clouds which helps to draw the object appearance completely or partially. For LIDAR data representation, six LIDARs are considered as one homogeneous sensor. The feature extraction task of LIDARs measurements are done by their build-in segmentation and feature extraction functionalists\cite{Cho_2014}. LIDAR measurement in $k^{th}$ second  is:
+\begin{equation}
+z^{L}(k) = \{l_{1},l_{2},...,l_{p}\} \ here, l_{i} = [\mathbf {x \ y \ \Phi \ \dot{x} \ \dot{y} \ w \ l}]^{T} \ where, i = 1, ...,q
+\end{equation}
+Here, $l_{i}$ contains the center of the box, the rotation ($\Phi$), velocity, width($w$), and length($l$) of the box. After LIDAR, cameras are the final visual sensor which could provide high definition images. Camera images are used to detect and track moving objects even static objects. In \cite{Cho_2014}, a vision based object detection technology developed to identify pedestrians, bicyclists and vehicles\cite{Cho_2014}. For sensor fusion purpose, the detected objects are represented using bounding boxes and treat them as measurements from vision sensors \cite{Cho_2014}. For camera image, if the camera image c captured in time step k,
+\begin{equation}
+z^{C}(k) = \{c_{1},c_{2},...,c_{p}\} \ here, c_{i} = [\mathbf {x_{1} \ y_{1} \ x_{2} \ y_{2} \ class}]^{T} \ where, i = 1, ...,r
+\end{equation}
+Here, $(x_{1} , y_{1})$ and $(x_{2} , y_{2})$ are the coordinates of the left-top and right-bottom point of a bounding box in image space, respectively and the class describes the object class such as pedestrian, bicyclist, or vehicle. r is the number of bounding box measurements at time step k.
 
 \subsubsection{Sensor Fusion}
-
-\subsubsection{Environment Setup}
 
 \subsubsection{Experimental Outcome}
 
