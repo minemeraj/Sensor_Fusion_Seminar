@@ -127,8 +127,22 @@ Here, $l_{i}$ contains the center of the box, the rotation ($\Phi$), velocity, w
 z^{C}(k) = \{c_{1},c_{2},...,c_{p}\} \ here, c_{i} = [\mathbf {x_{1} \ y_{1} \ x_{2} \ y_{2} \ class}]^{T} \ where, i = 1, ...,r
 \end{equation}
 Here, $(x_{1} , y_{1})$ and $(x_{2} , y_{2})$ are the coordinates of the left-top and right-bottom point of a bounding box in image space, respectively and the class describes the object class such as pedestrian, bicyclist, or vehicle. r is the number of bounding box measurements at time step k.
+Overall, each sensor have different way of representing data and the task performing characteristics is different from each other, but the fusion layer deal with them in the same in order to simplify the fusion process. The fusion layer captures data from three different types of sensors at time step k as:
+\begin{equation}
+z(k) = \{z^{R}(k), z^{L}(k), z^{C}(k)\}
+\end{equation}
+In the real world scenario, the measurements are captured asynchronously and published into the common communication channel at every time-stamp.
 
 \subsubsection{Sensor Fusion}
+In \cite{Cho_2014}, Extended Kalman Filter (EKF) is implemented in order to improve the tracking system. For optimization, the observation of sensor data task is done in the sequential-sensor manner where each sensor is observe independently and sequentially to perform EKF’s estimation task.
+\begin{enumerate}[label=\Alph*]
+    \item Tracking Models: To demonstrate tracking models, two motion models are chosen as standard i.e., a point model ($M_{P}$), a 3D box model ($M_{B}$). To observe three kinds of sensors three observation models are introduced i.e., Radar($O_{R}$), LIDAR ($O_{L}$) and camera ($O_{C}$) observation model.
+    \begin{description}
+        \item[Motion Models:] For every moving objects, pedestrians, bicyclists, and cars in this case, the kinematics situations are not same. A pedestrian has the probability to move in any direction in any time. But for the bicyclists or cars, the movement is confined by non-holonomic constraints\cite{Cho_2014}. Motion estimation is perfromed using point model and 3D box model where it is assumed that a point model moves wit a constant acceleration\cite{Cho_2014}. The 3D box model is a bicycle model wit its estimated 3D cuboid\cite{Cho_2014}.
+        \item[Observation Models:] In order to capture the point target, the Radar observation model ($O_{R}$) is used. The LIDAR observation model ($O_{L}$) is responsible for modeling a box target. Finally the camera observation model ($O_{C}$) handle the bounding box measurements in the image plane. In practice, the bounding box are not used to update the motion estimation because the depth is uncertain. In \cite{Cho_2014}, the detection results are used to estimate the width and the height of an object and determines objects’ classes.
+    \end{description}
+\end{enumerate}
+
 
 \subsubsection{Experimental Outcome}
 
