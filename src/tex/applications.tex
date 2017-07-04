@@ -24,8 +24,6 @@ It is assumed that the SLAM is a solved task. As a result it is more reasonable 
 
 Handling incomplete environment data is one of the important factor of assistance systems which leads to wrong perception. The reasons for incomplete sensor data are already described in the introduction section of this paper. Including incomplete information, there is another problem exists in the tracking process. The tracking process expects that all inputs are moving objects. But in the real world, environment consists of both moving and static objects. So, moving object detection is a very difficult task of moving object tracking system and various number of sensors need to work together to perform the task.
 
-\subsubsection{Motivation}
-
 \subsubsection{Environment Setup}
 In the experiment \cite{Chavez_Garcia_2016}, a Lancia Delta car is decorated with necessary equipment such as a processing unit for processing the image and create moving object list, some components which is responsible for driver interaction and the front - facing sensors i.e., Lidar, Camera and Radar. So the sensors only cover the front view of the vehicle as shown in figure \ref{fig:sensorcovarage}. An IBEO Lux laser scanner is used as the lidar sensor which can deliver a 2D list of impact points and it can cover all the points in the range of 200m. The radar is used to detect moving targets. It could detect targets within 150m and the velocity range up to 250kph. The camera would capture black and white images.
 
@@ -94,7 +92,6 @@ The perception System (PS) is tested in both highway and urban area with high tr
 \subsection{Multiple View Approach}
 In \cite{Cho_2014}, a previously build perception system is improved to adopted the real world driving experience. The previous perception system was designed for a robotic vehicle which could operated on a simple, urban environment setup having no obstacle objects with limited vehicle interactions \cite{Cho_2014}. But in the real world, an autonomous driver agent have to be aware of all possible risky situations such as prevent coalition with nearby pedestrians or vehicles. To have safety driving experience, it is very obvious to detect and track the moving objects. In this paper\cite{Cho_2014}, the previously developed perception system and the moving object tracking system are redesigned to ensure the safety and reliability. Even new sensors are placed in different view of the vehicle.
 
-\subsubsection{Motivation}
 
 \subsubsection{Environment Setup}
 The sensors are configured in a vehicle in a manner to track all the moving objects, cover the region around the vehicle within a certain range and take advantage of vehicle's build in sensors. According to those criteria the sensors are placed like shown in Figure \ref{fig:Sensor_Setup_Multiple_View} (a). All the sensors are set in the vehicle body in a way that the sensors are not visible from outside. Precisely, six radars, six LIDARs and three cameras are installed in the experiment vehicle. One radar is paired with a LIDARs at different height. Robust number of sensors are used to get maximum reliability with an extended range of sensor coverage. According to \cite{Cho_2014} the current setup, any object which exists in the range of 200 meters of the vehicle can be observed by any of the sensors. Any object in the range of 60 meters could be observed by at least two sensors either radar and LIDAR or radar and camera. The coverage of sensors are visualized in the Figure \ref{fig:Sensor_Setup_Multiple_View}(b). There are three cameras in three different-looking faces. One camera is installed in froward facing approach inside the front window. Another camera is installed in the rear bumper to provide the front and back side of perspective images. The third one is a thermal one which is able to sense even in night or foggy weather. Another advantage of having wide range of sensors is that the spots are small enough that no vehicle will be overlooked\cite{Cho_2014} Overall there are 14 sensors are installed in the vehicle.
@@ -135,24 +132,51 @@ In the real world scenario, the measurements are captured asynchronously and pub
 
 \subsubsection{Sensor Fusion}
 In \cite{Cho_2014}, Extended Kalman Filter (EKF) is implemented in order to improve the tracking system. For optimization, the observation of sensor data task is done in the sequential-sensor manner where each sensor is observe independently and sequentially to perform EKF’s estimation task.
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{src/pic/obstacle_a.png}
+        \caption{}
+        \label{fig:obstacle_a}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{src/pic/obstacle_b.png}
+        \caption{}
+        \label{fig:obstacle_b}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{src/pic/obstacle_c.png}
+        \caption{}
+        \label{fig:obstacle_c}
+    \end{subfigure}
+    \caption{\ref{fig:obstacle_a}:, \ref{fig:obstacle_b}:, \ref{fig:obstacle_c}:}
+    \label{fig:obstacle}
+\end{figure}
 \begin{enumerate}[label=\Alph*]
     \item Tracking Models: To demonstrate tracking models, two motion models are chosen as standard i.e., a point model ($M_{P}$), a 3D box model ($M_{B}$). To observe three kinds of sensors three observation models are introduced i.e., Radar($O_{R}$), LIDAR ($O_{L}$) and camera ($O_{C}$) observation model.
     \begin{description}
-        \item[Motion Models:] For every moving objects, pedestrians, bicyclists, and cars in this case, the kinematics situations are not same. A pedestrian has the probability to move in any direction in any time. But for the bicyclists or cars, the movement is confined by non-holonomic constraints\cite{Cho_2014}. Motion estimation is perfromed using point model and 3D box model where it is assumed that a point model moves wit a constant acceleration\cite{Cho_2014}. The 3D box model is a bicycle model wit its estimated 3D cuboid\cite{Cho_2014}.
-        \item[Observation Models:] In order to capture the point target, the Radar observation model ($O_{R}$) is used. The LIDAR observation model ($O_{L}$) is responsible for modeling a box target. Finally the camera observation model ($O_{C}$) handle the bounding box measurements in the image plane. In practice, the bounding box are not used to update the motion estimation because the depth is uncertain. In \cite{Cho_2014}, the detection results are used to estimate the width and the height of an object and determines objects’ classes.
+        \item[Motion Models:] For every moving objects, pedestrians, bicyclists, and cars in this case, the kinematics situations are not same. A pedestrian has the probability to move in any direction in any time. But for the bicyclists or cars, the movement is confined by non-holonomic constraints\cite{Cho_2014}. Motion estimation is performed using point model and 3D box model where it is assumed that a point model moves with a constant acceleration\cite{Cho_2014}. The 3D box model is a bicycle model wit its estimated 3D cuboid\cite{Cho_2014}.
+        \item[Observation Models:] In order to capture the point target, the Radar observation model ($O_{R}$) is used. The LIDAR observation model ($O_{L}$) is responsible for modeling a box target. Finally the camera observation model ($O_{C}$) handle the bounding box measurements in the image plane. In practice, the bounding box are not used to update the motion estimation because the depth is uncertain. In \cite{Cho_2014}, the detection results are used to estimate the width and the height of an object and determines objects’ classes. But it can not be used to object initialization or terminate of objects. When the image frames are ready, the length and width is calculated by subtracting the pixel and the 3D height calculated based on camera geometry.
     \end{description}
+    \item Data Association: The association of the current state with the previous state is a very critical task. To do the task optimally, some improvements has to be done in the  previous data association algorithm\cite{Cho_2014}.
+    
+    For camera observations(also called vision targets), the center of determined moving object is projected as either in a point or a box model on the next image frame under the pinhole camera model. After projection, a search is done due to find the nearest point that reduce the distance between the projected point and the middle of the bottom line of the detected bounding boxes. After that the camera observation and its object classification is instantiated. Figure \ref{fig:obstacle_a} shows the details about vision targets.
+    
+    For LIDAR observations(also called edge targets), a set of possible alignments of edge targets are generated depending on the predicted moving objects. There are four alignment for a box model and one for each point model\cite{Cho_2014}. The extracted targets are associated to the closest predicted one and which reduces the distance between the projected point and the middle of the bottom line of the detected bounding boxes. For utilization, edge targets tracking takes help from vision targets. For example, if the vision target focus on the rear view then it ignores the vehicles side view alignments. Figure \ref{fig:obstacle_b} shows the details about edge targets.
+    
+    For radar observations(also called point targets), a set of possible point targets is generated from the predicted moving object hypotheses\cite{Cho_2014}. Since radars are usually poor in determining a lateral position of an object, when a tracked object is modeled as a 3D box model, we generate multiple points along the contour of the box model. If an object is tracked through a point model, we generate a single point\cite{Cho_2014}. Figure \ref{fig:obstacle_c} shows the details about point targets.
+    
+    \item Movement Classification: It is the only goal of tracking is to know if the target is a moving or non-moving object. There are several scenarios of moving object. One object can move continuously, it may move a little bit and stop or stop a little bit then start. To track all of the scenarios, a series of states of a moving objects needs to be keep. In \cite{Cho_2014}, two movement flags are introduced. One is the movement history i.e., observed moving and not observed moving and another on is the movement state, i.e., moving and not moving\cite{Cho_2014}. As radar has build in functionality to track the moving objects, radar is the key component of tracking. Also the motion is compared with a threshold which is statistically determined by testing various vehicles. The movement history classification, the distance traveled is computed from the last time stamp that the object has been classified as not observed moving\cite{Cho_2014}. Here, the distance is also compared with a threshold. Though it is hard to find out the perfect threshold value, it is possible to get an realistic optimal value.
 \end{enumerate}
 
 
 \subsubsection{Experimental Outcome}
-
+The improved version of the tracking system shows a very good performance in real time\cite{Cho_2014}. Some improved cases are described in the following. When a vehicle is tracked in the range of 150m, the tracking system track it as a point model. But when the vehicle comes near at least 40m from the host vehicle the tracking system automatically tracked it as a 3D box model. It is one of the most important feature of self driving car. Because the car should know the exact dimension of the moving object as it come near or go far\cite{Cho_2014}. On the other hand, for pedestrians/bicyclists the range is up to 20m on the experiment vehicle's path.
 
 
 
 \section{Obstacle Detection}
 
-\subsection{Motivation}
-
 \subsection{Sensors Used}
 
 \subsection{Sensor Fusion}
@@ -162,14 +186,3 @@ In \cite{Cho_2014}, Extended Kalman Filter (EKF) is implemented in order to impr
 \subsection{Experimental Outcome}
 
 
-\section{Sensor-Independent Fusion}
-
-\subsection{Motivation}
-
-\subsection{Sensors Used}
-
-\subsection{Sensor Fusion}
-
-\subsection{Environment Setup}
-
-\subsection{Experimental Outcome}

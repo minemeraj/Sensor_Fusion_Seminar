@@ -103,29 +103,30 @@ $$m^{\prime}(\{S, U\})=(\frac{1}{0.85})(0.015) = 0.017$$
 So, the combination result is $88.2\%$ satisfied, $10\%$ unsatisfied and $1.7\%$ undecided. Authors has used this evidential approach based on mass distributions over the set of different class hypotheses\cite{Chavez_Garcia_2016}.
 
 \subsection{Kalman Filter}
-The Kalman Filter(KF) is a linear mathematical model which uses a recursive algorithm for fltering signals by measuring a respectable amount of statistical and systematical errors[1]. It was developed by Kalman and Bucy in 1960[1].KF generates a estimation of the true and measured values[2]. First, it predicts a value. Then it measures the ambiguity of previous value. Finally, it performs an weighted average of both the predicted and measured values[2].
-The more the weight is, the less the ambiguity is. The output of a KF is the estimation which is closer to true values. This is the basic operation of a KF.\\
-A standard KF model is explained by two linear equations[1]. The first equation measures the state of a system at time $k$ which is governed by the linear stochastic difference equation[2]:
-$$aaa$$
+The Kalman Filter(KF) is a linear mathematical model which uses a recursive algorithm for filtering signals by measuring a respectable amount of statistical and systematical errors\cite{Wilfried2002}. It was developed by Kalman and Bucy in 1960\cite{Wilfried2002}.KF generates a estimation of the true and measured values\cite{aich2010study}. First, it predicts a value. Then it measures the ambiguity of previous value. Finally, it performs an weighted average of both the predicted and measured values\cite{aich2010study}.
+The more the weight is, the less the ambiguity is. The output of a KF is the estimation which is closer to true values. This is the basic operation of a KF.
+
+A standard KF model is explained by two linear equations\cite{Wilfried2002}. The first equation measures the state of a system at time $k$ which is governed by the linear stochastic difference equation\cite{aich2010study}:
+$$\vec{x_{k}} = A \cdot \vec{x_{k-1}} + B \cdot \vec{u_{k-1}} + w_{k-1}$$
 \begin{table}[!htbp]
 \centering
 \label{my-label}
 \begin{tabular}{llll}
-where, & $bbb$     & = & a vector representing the state at time $k-1$                                                                                                                                         \\
+where, & $\vec{x_{k-1}}$     & = & a vector representing the state at time $k-1$                                                                                                                                         \\
        & $A$       & = & non singular state transition matrix                                                                                                                                                  \\
-       & $ccc$     & = & a vector representing the input of the system at time $k-1$                                                                                                                           \\
-       & $B$       & = & The relation between $bbb$ and $ccc$                                                                                                                                                  \\
+       & $\vec{u_{k-1}}$     & = & a vector representing the input of the system at time $k-1$                                                                                                                           \\
+       & $B$       & = & The relation between $\vec{x_{k-1}}$ and $\vec{u_{k-1}}$                                                                                                                                                  \\
        & $w_{k-1}$ & = & a random variable representing the process noise, \\
        &        & & modelled as white noise $\sim N(0; Q)$, where $Q$ is the covariance matrix
 \end{tabular}
 \end{table}\\
-with a measurement which is the second equation[2]:
-$$eee$$
+with a measurement which is the second equation\cite{aich2010study}:
+$$\vec{z_{k}} = H \cdot \vec{x_{k}} + \vec{v_{k}} $$
 \begin{table}[!htbp]
 \centering
 \label{my-label}
 \begin{tabular}{llll}
-where, & $fff$     & = & a vector representing the sensor observation at time $k$                                                                                                                                         \\
+where, & $\vec{z_{k}}$     & = & a vector representing the sensor observation at time $k$                                                                                                                                         \\
        & $H$       & = & a matrix relates the measurements to the internal state                                                                                                                                            \\
        & $v_{k}$ & = & a random variable representing the measurement noise, \\
        &        & & also modelled as white noise $\sim N(0; Q)$, where $R$ is the covariance matrix
@@ -133,14 +134,14 @@ where, & $fff$     & = & a vector representing the sensor observation at time $k
 \end{table}
 
 \subsubsection{Kalman Filtering Algorithm}
-To start a KF, user has to give an estimation $lll$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps[1]:
+To start a KF, user has to give an estimation $lll$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps\cite{Wilfried2002}:
 \begin{enumerate}
   \item  Compute a predicted priori state estimation of state $xxx$ at time $k$ by using given observations up to $k-1$.
   $$ggg$$
   \item Compute predicted error covariance matrix at time $k$.
-  $$hhh$$
+  $$P_{k|k-1} = A \cdot P_{k|k} \cdot A|{T} + Q$$
   \item Compute Kalman gain.
-  $$iii$$
+  $$K_{k} = \frac{P_{k|k-1} \cdot C^{T}}{C \cdot P_{k-1|k} \cdot C^{T} + R}$$
   \item Update the estimation by a measurement $z_{k}$.
   $$jjj$$
   \item Update error covariance matrix.
@@ -149,8 +150,8 @@ To start a KF, user has to give an estimation $lll$ and an estimate of its covar
 \end{enumerate}
 
 After performing these 5 steps the iteration restarts again from step 1, but with $k:=k+1$.\\
-So, we can say that The equations containing in the steps of above algorithm can be divided into two groups: time update equations (equation 1 and 2) and measurement update equations(equation 3-5)[3]. Also the final estimation algorithm looks like  a predictor-corrector algorithm as shown in Figure [cycle].
+So, we can say that The equations containing in the steps of above algorithm can be divided into two groups: time update equations (equation 1 and 2) and measurement update equations(equation 3-5)\cite{bishop2001introduction}. Also the final estimation algorithm looks like  a predictor-corrector algorithm as shown in Figure [cycle].
 
 \subsubsection{Underlying Dynamic System Model}
-KF is based on linear and non-linear dynamical systems discretized in the time domain[3]. As shown in Figure [underlying], each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
-There are lot of dynamic systems which do not support KF as it is a linear model[2]. To deal with these type of dynamic systems Extended KF and Unscented KF are used which are the extended version KF[2].
+KF is based on linear and non-linear dynamical systems discretized in the time domain\cite{bishop2001introduction}. As shown in Figure [underlying], each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
+There are lot of dynamic systems which do not support KF as it is a linear model\cite{aich2010study}. To deal with these type of dynamic systems Extended KF and Unscented KF are used which are the extended version KF\cite{aich2010study}.
