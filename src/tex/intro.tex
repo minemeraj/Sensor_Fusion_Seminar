@@ -121,7 +121,7 @@ where, & $\vec{x}_{k-1}$     & = & a vector representing the state at time $k-1$
 \end{tabular}
 \end{table}\\
 with a measurement which is the second equation\cite{aich2010study}:
-$$\vec{z_{k}} = H \cdot \vec{x_{k}} + \vec{v_{k}} $$
+$$\vec{z_{k}} = H \cdot \vec{x_{k}} + v_{k} $$
 \begin{table}[!htbp]
 \centering
 \label{my-label}
@@ -136,12 +136,12 @@ where, & $\vec{z_{k}}$     & = & a vector representing the sensor observation at
 \subsubsection{Kalman Filtering Algorithm}
 To start a KF, user has to give an estimation $\vec{x_{0}}$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps\cite{Wilfried2002}:
 \begin{enumerate}
-  \item  Compute a predicted priori state estimation of state $xxx$ at time $k$ by using given observations up to $k-1$.
+  \item  Compute a predicted priori state estimation of state $\vec{x}$ at time $k$ by using given observations up to $k-1$.
   $$\vec{x}_{k|k-1} = A\cdot \vec{x}_{k-1|k-1} + B\cdot \vec{u}_{k-1}$$
   \item Compute predicted error covariance matrix at time $k$.
-  $$P_{k|k-1} = A \cdot P_{k|k} \cdot A|{T} + Q$$
+  $$P_{k|k-1} = A \cdot P_{k-1|k-1} \cdot A|{T} + Q$$
   \item Compute Kalman gain.
-  $$K_{k} = \frac{P_{k|k-1} \cdot C^{T}}{C \cdot P_{k-1|k} \cdot C^{T} + R}$$
+  $$K_{k} = \frac{P_{k|k-1} \cdot C^{T}}{C \cdot P_{k|k-1} \cdot C^{T} + R}$$
   \item Update the estimation by a measurement $z_{k}$.
   $$\vec{x}_{k|k} = \vec{x}_{k|k-1} + k_{k} \cdot (z_{k} - C \cdot \vec{x}_{k|k-1})$$
   \item Update error covariance matrix.
@@ -169,3 +169,36 @@ So, we can say that The equations containing in the steps of above algorithm can
 \subsubsection{Underlying Dynamic System Model}
 KF is based on linear and non-linear dynamical systems discretized in the time domain\cite{bishop2001introduction}. As shown in Figure \ref{fig:Kalman_filter_model_2}, each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
 There are lot of dynamic systems which do not support KF as it is a linear model\cite{aich2010study}. To deal with these type of dynamic systems Extended KF and Unscented KF are used which are the extended version KF\cite{aich2010study}.
+
+\subsection{Extended Kalman Filter}
+The extended Kalman filter (EKF) is the nonlinear version of the Kalman filter which linearizes about the current mean and covariance \cite{aich2010study}. In the EKF, the transition state ($\vec{x}_{k}$) and observation state ($\vec{z}_{k}$) space models may not be linear functions of the state as like KF but might be many non-linear functions \cite{aich2010study}.\\
+Like KF, an EKF model is also explained by two linear equations, but The first equation measures the state of a system at time $k$ which is now governed by the non-linear stochastic difference equation\cite{aich2010study}:
+$$\vec{x}_{k} = f( \vec{x}_{k-1}, \vec{u}_{k-1}) + w_{k-1}$$
+with a measurement which is the second equation\cite{aich2010study}:
+$$\vec{z_{k}} = h( \vec{x_{k}}) + v_{k} $$
+where, the random variables $w_{k}$ and $v_{k}$ again represent the process and measurement noise as like in KF. These random variables are assumed to be zero with covariance $Q_{k}$ and $R_{k}$ respectively\cite{aich2010study}. The non-linear functions $f$ relates the state at time step $k-1$ to the state at step $k$ and $h$ relates
+the state $\vec{x}_{k}$ to the measurement $\vec{z}_{k}$\cite{bishop2001introduction}. At each time step with the help of current prediction the Jacobian (a matrix of partial derivatives) is calculated, because  $f$ and $h$ cannot
+be used to the covariance directly.It is used in the EKF equations which linearizes the non-linear functions\cite{aich2010study}.
+\subsubsection{Extended Kalman Filtering Algorithm}
+The initialization part is exactly like the Kalman Filtering Algorithm. It has the following steps\cite{aich2010study}:
+\begin{enumerate}
+  \item  Compute a predicted priori state.
+  $$\vec{x}_{k|k-1} = f( \vec{x}_{k-1|k-1} + \vec{u}_{k-1})$$
+  \item Compute predicted error covariance matrix at time $k$.
+  $$P_{k|k-1} = F_{k}P_{k-1|k-1} F{_{k}}^T + Q$$
+  where, $F_{k-1} = \frac{\partial f}{\partial x} |_{\vec{x}_{k-1|k-1},\vec{u}_{k-1}}$ (Jacobian).
+  \item Compute Kalman gain.
+  $$K_{k} = P_{k|k-1}H_{k}S{_{k}}^{-1}$$
+  where, $H_{k} = \frac{\partial h}{\partial x} |_{\vec{x}_{k|k-1}}$ (Jacobian) and $S_{k} = H_{k}P_{k|k-1}H{_{k}}^T + R$ (innovation or residual covariance).
+  \item Update the estimation by a measurement $z_{k}$.
+  $$\vec{x}_{k|k} = \vec{x}_{k|k-1} + K_{k}\tilde y_{k}$$
+  where $\tilde y_{k}=z_{k}-h(\vec{x}_{k|k-1})$ (innovation or measurement residual).
+  \item Update error covariance matrix.
+  $$P_{k|k} = (I - k_{k}H_{k})P_{k|k-1}$$
+  where, $I$ is the identity matrix.
+\end{enumerate}
+After performing these 5 steps the iteration restarts again from step 1, but with $k:=k+1$.
+So, Extended Kalman Filtering Algorithm is also the same as the linear discrete KF as shown in Figure \ref{fig:kalman_cycle}\cite{bishop2001introduction}.
+
+
+
