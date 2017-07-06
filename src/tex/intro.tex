@@ -17,7 +17,7 @@ is the combining of sensory data or data derived from sensory data such that the
 There is a confusion about \emph{multisensor integration} and \emph{sensor fusion}. In multisensor integration, data is received from multiple sensor but it is send to the control application directly without fusion. In sensor fusion, data also comes from multiple sensor but the control application get the fused data which is only one single representation of environment model and the control application gets only one data.
 
 \section{Motivation for Sensor Fusion}
-The following scenarios are very common whcih may fails physical sensor measurement\cite{Wilfried2002}:
+The following scenarios are very common which may fails physical sensor measurement\cite{Wilfried2002}:
 \begin{description}
     \item[Sensor Element Broken:] A sensor is composed with some small elements. If one of the elements are broken, it would give incomplete results. Incomplete results would be produced for some other reasons, such as calibration issues,hardware malfunctions, uncertain detection and asynchronous scans, even from scene perturbations, like occlusions, weather issues and object shifting.
     \item[Only Covering Restricted Region:] An individual sensor has the capability of covering a limited range. For example, a camera sensor facing to the front side of a car could not cover the back side of the car.
@@ -107,15 +107,15 @@ The Kalman Filter(KF) is a linear mathematical model which uses a recursive algo
 The more the weight is, the less the ambiguity is. The output of a KF is the estimation which is closer to true values. This is the basic operation of a KF.
 
 A standard KF model is explained by two linear equations\cite{Wilfried2002}. The first equation measures the state of a system at time $k$ which is governed by the linear stochastic difference equation\cite{aich2010study}:
-$$\vec{x_{k}} = A \cdot \vec{x_{k-1}} + B \cdot \vec{u_{k-1}} + w_{k-1}$$
+$$\vec{x}_{k} = A \cdot \vec{x}_{k-1} + B \cdot \vec{u}_{k-1} + w_{k-1}$$
 \begin{table}[!htbp]
 \centering
 \label{my-label}
 \begin{tabular}{llll}
-where, & $\vec{x_{k-1}}$     & = & a vector representing the state at time $k-1$                                                                                                                                         \\
+where, & $\vec{x}_{k-1}$     & = & a vector representing the state at time $k-1$                                                                                                                                         \\
        & $A$       & = & non singular state transition matrix                                                                                                                                                  \\
-       & $\vec{u_{k-1}}$     & = & a vector representing the input of the system at time $k-1$                                                                                                                           \\
-       & $B$       & = & The relation between $\vec{x_{k-1}}$ and $\vec{u_{k-1}}$                                                                                                                                                  \\
+       & $\vec{u}_{k-1}$     & = & a vector representing the input of the system at time $k-1$                                                                                                                           \\
+       & $B$       & = & The relation between $\vec{x}_{k-1}$ and $\vec{u}_{k-1}$                                                                                                                                                  \\
        & $w_{k-1}$ & = & a random variable representing the process noise, \\
        &        & & modelled as white noise $\sim N(0; Q)$, where $Q$ is the covariance matrix
 \end{tabular}
@@ -134,24 +134,38 @@ where, & $\vec{z_{k}}$     & = & a vector representing the sensor observation at
 \end{table}
 
 \subsubsection{Kalman Filtering Algorithm}
-To start a KF, user has to give an estimation $lll$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps\cite{Wilfried2002}:
+To start a KF, user has to give an estimation $\vec{x_{0}}$ and an estimate of its covariance $P_{0|0}$ i.e., inaccurate start value. After initialization user can traverse the Kalman Filtering Algorithm. It has following steps\cite{Wilfried2002}:
 \begin{enumerate}
   \item  Compute a predicted priori state estimation of state $xxx$ at time $k$ by using given observations up to $k-1$.
-  $$ggg$$
+  $$\vec{x}_{k|k-1} = A\cdot \vec{x}_{k-1|k-1} + B\cdot \vec{u}_{k-1}$$
   \item Compute predicted error covariance matrix at time $k$.
   $$P_{k|k-1} = A \cdot P_{k|k} \cdot A|{T} + Q$$
   \item Compute Kalman gain.
   $$K_{k} = \frac{P_{k|k-1} \cdot C^{T}}{C \cdot P_{k-1|k} \cdot C^{T} + R}$$
   \item Update the estimation by a measurement $z_{k}$.
-  $$jjj$$
+  $$\vec{x}_{k|k} = \vec{x}_{k|k-1} + k_{k} \cdot (z_{k} - C \cdot \vec{x}_{k|k-1})$$
   \item Update error covariance matrix.
-  $$kkk$$
+  $$P_{k|k} = (I - k_{k} \cdot C) P_{k+1|k} (I - k_{k} \cdot C)^{T} + k_{k} \cdot R \cdot k^{T}_{k}$$
   where, $I$ is the identity matrix.
 \end{enumerate}
 
 After performing these 5 steps the iteration restarts again from step 1, but with $k:=k+1$.\\
-So, we can say that The equations containing in the steps of above algorithm can be divided into two groups: time update equations (equation 1 and 2) and measurement update equations(equation 3-5)\cite{bishop2001introduction}. Also the final estimation algorithm looks like  a predictor-corrector algorithm as shown in Figure [cycle].
+So, we can say that The equations containing in the steps of above algorithm can be divided into two groups: time update equations (equation 1 and 2) and measurement update equations(equation 3-5)\cite{bishop2001introduction}. Also the final estimation algorithm looks like  a predictor-corrector algorithm as shown in Figure \ref{fig:kalman_cycle}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.4\textwidth]{src/pic/kalman_cycle.png}
+  \caption{Kalman Filter Cycle \cite{bishop2001introduction}}
+  \label{fig:kalman_cycle}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1\textwidth]{src/pic/Kalman_filter_model_2.pdf}
+  \caption{Underlying Model of the Kalman Filter \cite{aich2010study}}
+  \label{fig:Kalman_filter_model_2}
+\end{figure}
 
 \subsubsection{Underlying Dynamic System Model}
-KF is based on linear and non-linear dynamical systems discretized in the time domain\cite{bishop2001introduction}. As shown in Figure [underlying], each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
+KF is based on linear and non-linear dynamical systems discretized in the time domain\cite{bishop2001introduction}. As shown in Figure \ref{fig:Kalman_filter_model_2}, each state represents a real vector and a sequence of noisy observations are the inputs of internal states. The system is modeled according to the state space representation of the KF specifying the matrices i.e., the state transition model ($A$), the observation model ($H$), the covariance of the process noise ($Q$), the covariance of the measurement noise ($R$), and sometimes the control-input model ($B$) for each time-step $k$.\\
 There are lot of dynamic systems which do not support KF as it is a linear model\cite{aich2010study}. To deal with these type of dynamic systems Extended KF and Unscented KF are used which are the extended version KF\cite{aich2010study}.

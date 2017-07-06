@@ -11,7 +11,7 @@ The intelligent vehicles are now becoming capable of instruct themselves to driv
 In \cite{Chavez_Garcia_2016}, an advanced driver assistance systems (ADAS) is introduced which main task is to help the drivers to avoid dangerous situations. ADAS assists with warning messages in dangerous driving situations (e.g., possible collisions), activation of safety devices to mitigate imminent collisions, autonomous maneuvers to avoid obstacles, and attention-less driver warnings\cite{Chavez_Garcia_2016}. There are two major tasks to perceive the environment. The task simultaneous localization and mapping (SLAM) is one of and another one is to detect and track the moving objects (DATMO). The model of perception task is shown in figure \ref{fig:datmoslam}.
 \begin{figure}
   \centering
-  \includegraphics[width=.4\textwidth]{src/pic/datmo_slam_arch.png}
+  \includegraphics[width=.6\textwidth]{src/pic/datmo_slam_arch.png}
   \caption{General Architecture of perception task. \cite{Chavez_Garcia_2016}}
   \label{fig:datmoslam}
 \end{figure}
@@ -173,15 +173,28 @@ In \cite{Cho_2014}, Extended Kalman Filter (EKF) is implemented in order to impr
 \subsubsection{Experimental Outcome}
 The improved version of the tracking system shows a very good performance in real time\cite{Cho_2014}. Some improved cases are described in the following. When a vehicle is tracked in the range of 150m, the tracking system track it as a point model. But when the vehicle comes near at least 40m from the host vehicle the tracking system automatically tracked it as a 3D box model. It is one of the most important feature of self driving car. Because the car should know the exact dimension of the moving object as it come near or go far\cite{Cho_2014}. On the other hand, for pedestrians/bicyclists the range is up to 20m on the experiment vehicle's path.
 
-
-
-\section{Obstacle Detection}
-
-\subsection{Sensors Used}
-
-\subsection{Sensor Fusion}
+\section{Sensor-Independent Fusion Approach}
+In the area of "Autonomous Driving", it is a very basic idea to use multiple sensors and to fuse the sensors data to determine something which can not be determined by just evaluating the sensors data separately. The sensors are hardware module which are accessed by a very complex software module to handle the sensor data and operate the vehicle. Meanwhile, different sensors module may have different software dependency which makes the changeability of sensor harder. There could be several reasons to change the sensors, but the main two reasons are: 
+\begin{enumerate}
+    \item Add more sensors to increase reliability or systems Field of View (FOV)\cite{Kunz_2015}
+    \item Replacing costly sensors with the cheaper ones, with a reduced for example, to make the system available for cheaper cars. So, if there is a need of replacement or enhancement, the software module is also needs to be updated or redeveloped.
+\end{enumerate}
+So, if there is a need of replacement or enhancement, the software module is also needs to be updated or integrated with new code. In the paper \cite{Kunz_2015}, a modular multi-sensor sensor independent fusion system is proposed where sensor independent means it can accept any kind of sensor. It would be possible in that system that, changing the sensors does not involved software changes. This sensor independent approach ensures redundancy and replaceable using sensor-independent probabilistic interfaces\cite{Kunz_2015}. From the view point of performance, this system could provide good performance in the occurrence of temporary malfunction or degradation of individual sensors.
 
 \subsection{Environment Setup}
+Foe the experiment, a Mercedes-Benz E-Class car is selected and modified to enable autonomous features. The modification includes, A Paravan Space-Drive steering system which enables moving the steering by wire, a modified ESP(electronic stability program) control unit which enables to directly specify the break and acceleration torque\cite{Kunz_2015}. To perform the high level computational tasks, two computers are installed in the trunk and they could perform parallel.
+
+\subsection{Sensors Used}
+Three sensors are installed in the experiment vehicle. They are installed in a way that, it is hardly visible from outside and integrated in the body. There are three IBEO LUX laser scanners are set in the front bumper. They have the ability to scan maximum range of up to 200m at front and the angle of 210$^{\circ}$. There is also a front facing monochrome camera is installed behind the windshield with a resolution of 1392 x 1040 px. Moreover, the car is equipped with seral radar sensors. A Frequency Modulated Continuous Wave (FMCW) based Continental ARS 310 automotive long-range radar is mounted underneath the grille\cite{Kunz_2015}. The radars have the range of o.25m to 200m. The sensor coverage is visualized in the fig \ref{fig:sensor_covarage_Independent}. To cover the rear view, a radar is mounted centered behind the rear bumper and two reward facing cameras are mounted hehind the rear window. Besides all of these sensors, A real-time kinematic (RTK) system in combination with a differential GPS is used for mapping and evaluation\cite{Kunz_2015}.
+\begin{figure}
+  \centering
+  \includegraphics[width=.6\textwidth]{src/pic/sensor_covarage_Independent.png}
+  \caption{The front face of the vehicle is in the right direction.  Sensor coverage: cameras(blue), laser scanners (red), radar sensors (green) \cite{Kunz_2015}}
+  \label{fig:sensor_covarage_Independent}
+\end{figure}
+\subsection{Sensor Fusion}
+According to \cite{Kunz_2015}, in a multi-sensor system it is highly recommended to utilize all of the sensors data. One sensor may recover the draw backs of other sensors. For example, A radar has build in functionality to give accurately the position and velocity of moving object. But the yaw angle is uncertain. To recover this drawback of radar we could use a mono camera which can not provide velocity information but it can provide an accurate yaw angle.
+
 
 \subsection{Experimental Outcome}
 
