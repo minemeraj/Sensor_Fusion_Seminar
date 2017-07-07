@@ -43,14 +43,14 @@ The fusion process is performed in a Perception System (PS) which is developed a
         \caption{}
         \label{fig:sensorcovarage}
     \end{subfigure}
-    \caption{\ref{fig:PS}:Sensor Fusion model, \ref{fig:sensorcovarage}:Coverage of the sensors}
-    \label{fig:group1}
+    \caption{Sensor Fusion model (a) and Coverage of the sensors (b)}
+    \label{fig:Sensor_Fusion_1}
 \end{figure}
 
 \subsubsection{Moving Object Detection}
 The process of three individual sensors for Moving object detection are described bellow:
 \begin{description}
-    \item[Lidar Processing:] Lidar is used as the leading sensor in the setup as it can produce high resolution data with more accurate result. The principal task of lidar is to get exact information of the shape of the moving object in front of the vehicle. Though the main pourpose is to focus on DATMO task, the SLAM component is also implemented to get the map of objects and vehicles position in the map\cite{Chavez_Garcia_2016}. By the lidar data a 2D Bayesian occupancy grid map is created. Each cell in the map is filled with or not by an object where vehicles location if found by Maximum Likelihood approach. Each time the sensor updates, the map is recalculated and the vehicle position is also re-estimated. Besides, lidar based detection also works with the help of the grid map. If the a cell of grid map is occupied with an obstacle which was previously free cell, then it is said to be a moving object. In the contrast, if a cell is occupied with an object which was also previously occupied, then it is said to be a static object. The SLAM process is completely independent from the moving object detection task.
+    \item[Lidar Processing:] Lidar is used as the leading sensor in the setup as it can produce high resolution data with more accurate result. The principal task of lidar is to get exact information of the shape of the moving object in front of the vehicle. Though the main purpose is to focus on DATMO task, the SLAM component is also implemented to get the map of objects and vehicles position in the map\cite{Chavez_Garcia_2016}. By the lidar data a 2D Bayesian occupancy grid map is created. Each cell in the map is filled with or not by an object where vehicles location if found by Maximum Likelihood approach. Each time the sensor updates, the map is recalculated and the vehicle position is also re-estimated. Besides, lidar based detection also works with the help of the grid map. If the a cell of grid map is occupied with an obstacle which was previously free cell, then it is said to be a moving object. In the contrast, if a cell is occupied with an object which was also previously occupied, then it is said to be a static object. The SLAM process is completely independent from the moving object detection task.
     \item[Camera Images:] The camera images are processed to extract the visual features and classification.
     \begin{enumerate}
         \item{Visual Representation:} The Histograms of Oriented Gradients (HOG) descriptor is taken as the core of vehicle and pedestrian visual representation as it has already shown promising results\cite{Chavez_Garcia_2016}. The main goal is to extract the graphical details of the particular area of the image which is important to extract for future use to find out the existence of the object of interest. A sparse version of the HOG descriptor (S-HOG) is proposed to use instead of actual HOG descriptor which focuses on specific areas of an image patch \cite{Chavez_Garcia_2016}. S-HOG reduces the common high-dimensional HOG descriptor to explains the selected block of the image of different class.
@@ -100,7 +100,7 @@ The sensors are configured in a vehicle in a manner to track all the moving obje
 \begin{figure}
   \centering
   \includegraphics[width=1\textwidth]{src/pic/Sensor_Setup_Multiple_View.png}
-  \caption{\cite{Cho_2014}}
+  \caption{Sensor Configuration for Multiple View \cite{Cho_2014}}
   \label{fig:Sensor_Setup_Multiple_View}
 \end{figure}
 
@@ -108,7 +108,7 @@ The sensors are configured in a vehicle in a manner to track all the moving obje
 \begin{figure}
   \centering
   \includegraphics[width=.6\textwidth]{src/pic/Fusion_Arch_Multiple_View.png}
-  \caption{\cite{Cho_2014}}
+  \caption{Architecture of Tracking System. \cite{Cho_2014}}
   \label{fig:Fusion_Arch_Multiple_View}
 \end{figure}
 The new redesigned perception system have two parts i.e., sensor and fusion layer as shown in figure \ref{fig:Fusion_Arch_Multiple_View}. Dividing the system into two independent module makes it possible to develop them independently based on an interface without knowing each others internal functionality. There is a common communication channel available for data exchange between those two modules. Each time new raw sensor data is available, reader extract features such as lines or corners and push the data to the common communication channel. The shared data is accessed any time by the higher level module i.e., fusion module. In fusion layer, the sensor measurements are processed as unit of measures where each object measured as a box model, but they are presented differently\cite{Cho_2014}. For example, a radar provides 2D position and velocity of an object. Radar data is represented in an array where time as the index of the array. Radar measurement in $k^{th}$ second  is:
@@ -137,20 +137,20 @@ In \cite{Cho_2014}, Extended Kalman Filter (EKF) is implemented in order to impr
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\textwidth]{src/pic/obstacle_a.png}
-        \caption{}
+        \caption{Camera}
         \label{fig:obstacle_a}
     \end{subfigure}
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\textwidth]{src/pic/obstacle_b.png}
-        \caption{}
+        \caption{LIDAR}
         \label{fig:obstacle_b}
     \end{subfigure}
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\textwidth]{src/pic/obstacle_c.png}
-        \caption{}
+        \caption{Radar}
         \label{fig:obstacle_c}
     \end{subfigure}
-    \caption{\ref{fig:obstacle_a}:, \ref{fig:obstacle_b}:, \ref{fig:obstacle_c}:}
+    \caption{Illustration of data association methods for each sensor\cite{Cho_2014}}
     \label{fig:obstacle}
 \end{figure}
 \begin{enumerate}[label=\Alph*]
