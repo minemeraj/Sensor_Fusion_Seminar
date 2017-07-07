@@ -14,7 +14,7 @@ On the other hand, the more formal definition of Sensor Fusion is defined in \ci
 \begin{definition}{Sensor Fusion}
 is the combining of sensory data or data derived from sensory data such that the resulting information is in some sense better than would be possible when these sources were used individually.
 \end{definition}
-There is a confusion about \emph{multisensor integration} and \emph{sensor fusion}. In multisensor integration, data is received from multiple sensor but it is send to the control application directly without fusion. In sensor fusion, data also comes from multiple sensor but the control application get the fused data which is only one single representation of environment model and the control application gets only one data.
+There is a confusion about \emph{multi-sensor integration} and \emph{sensor fusion}. In multisensor integration, data is received from multiple sensor but it is send to the control application directly without fusion. In sensor fusion, data also comes from multiple sensor but the control application get the fused data which is only one single representation of environment model and the control application gets only one data.
 
 \section{Motivation for Sensor Fusion}
 The following scenarios are very common which may fails physical sensor measurement\cite{Wilfried2002}:
@@ -22,16 +22,16 @@ The following scenarios are very common which may fails physical sensor measurem
     \item[Sensor Element Broken:] A sensor is composed with some small elements. If one of the elements are broken, it would give incomplete results. Incomplete results would be produced for some other reasons, such as calibration issues,hardware malfunctions, uncertain detection and asynchronous scans, even from scene perturbations, like occlusions, weather issues and object shifting.
     \item[Only Covering Restricted Region:] An individual sensor has the capability of covering a limited range. For example, a camera sensor facing to the front side of a car could not cover the back side of the car.
     \item[Processing Time:] Some sensors are limited to processing power so that they need some time to capture and transmit the data. As a result, the frequency of measurement is also decreased. For example, a very complex camera sensor may sends the captured image of a pedestrian crossing the road after one or two seconds which is very risky for self driving car.
-    \item[Uncertainty:] The single sensor measurement could be uncertain. For example, a distance sensor facing to the front of a car may capture the correct distance from a object or may be the sensor beam misses the object and giving the wrong distance. Actually, uncertainty occurs for missing functionality (e.g., occlusions) and also when sensor can not measure all relevant attributes of precept, or when the observation is ambiguous\cite{Wilfried2002}. Because of having coverage of limited region, a single sensor may produce uncirtain result\cite{Wilfried2002}.
+    \item[Uncertainty:] The single sensor measurement could be uncertain. For example, a distance sensor facing to the front of a car may capture the correct distance from a object or may be the sensor beam misses the object and giving the wrong distance. Actually, uncertainty occurs for missing functionality (e.g., occlusions) and also when sensor can not measure all relevant attributes of precept, or when the observation is ambiguous\cite{Wilfried2002}. Because of having coverage of limited region, a single sensor may produce uncertain result\cite{Wilfried2002}.
 \end{description}
-Sensor Fusion could solves problems given above. The following advantages can be expected from sensor fusion over a single sensor\cite{Wilfried2002}:
+Sensor Fusion could solve the problems given above. The following advantages can be expected from sensor fusion over a single sensor\cite{Wilfried2002}:
 \begin{description}
     \item[Robustness and reliability:] Depending on multiple sensor increase the redundancy of data and even if one of the sensors are broken, we expect accurate data.
-    \item[Extended Coverage:] By multiple sensor, the environment can be observed from different faces and different angle.
-    \item[Processing Parallel:] One sensor can take some time to process and other sensor can capturing and again when one finish processing start capturing and other stat processing.
-    \item[Reduce Uncertainty:] Getting same data from multiple sensor reduce the uncertainty. For example, one sensor may miss the object but other may capture.
-    \item[Prevent Interruption:] Using different types of sensors for same purpose can prevent interruption. For example, a self driving car is driving while raining and the camera sensor could not see the actual objects in-front of it because of rain drops. In this case, parallel performing an ultrasonic sensor can still measure the objects.
-    \item[Improved Quality:] Getting same data from multiple source increasing the quality of the data.
+    \item[Extended Coverage:] By multiple sensor, the environment can be observed from different faces and different angles.
+    \item[Processing Parallel:] One sensor can take some time to process and other sensor can capture and again when one finishes, processing start to capture and other stats processing.
+    \item[Reduce Uncertainty:] Getting same data from multiple sensors reduce the uncertainty. For example, one sensor may miss the object but other may capture.
+    \item[Prevent Interruption:] Using different type of sensors for same purpose can prevent interruption. For example, a self driving car is driving while raining and the camera sensor could not see the actual objects in-front of it because of rain drops. In this case, a parallely performed ultrasonic sensor can still measure the objects.
+    \item[Improved Quality:] Getting same data from multiple sources increase the quality of the data.
 \end{description}
 One of the interesting advantage of sensor fusion is the possibility to reduce system complexity\cite{Wilfried2002}. It is possible to consider the sensor fusion component as a separate system and the main control system could communicate with it via defined interface. To do so we can modify the fusion subsystem without touching the main system\cite{Wilfried2002}.
 
@@ -42,12 +42,12 @@ Sensor Fusion is categorized by different applications in aspects. In the follow
 According to level of data the fusion process can be categorized by following criteria:
 \begin{description}
     \item[Low-level fusion] is also known as \emph{raw data fusion} refers to fusion of raw data from multiple sensor and combine them to produce new data which is more reliable and understandable than the raw data.
-    \item[Intermediate-level fusion] is also knows as \emph{feature level fusion} refers to collecting a bunch of features and keep the features into a feature map which can be used by AI applications like segmentation and detection of objects. For example, keeping features like edges, corners, lines are useful for pedestrians detection.
+    \item[Intermediate-level fusion] is also knows as \emph{feature level fusion} refers to collect a bunch of features and keep the features into a feature map which can be used by AI applications like segmentation and detection of objects. For example, keeping features like edges, corners, lines are useful for pedestrians detection.
     \item[High-level fusion] is also known as \emph{decision fusion} refers to making decisions from several sensors. For example, voting, fuzzy-logic and statistical methods.\cite{Wilfried2002}.
 \end{description}
 
 \subsection{Categorization Based on Input/Output}
-Dasarathy extend the three-Level categorization based on input/output\cite{Wilfried2002}. Actually if the input output are considered then the input of one level comes from another level. For example, the input of feature extraction comes from raw data and the raw data produce selection of some features. So, the levels are not same anymore.  In Figure \ref{fig:InputoutputCat}, the relation between three-Level categorization and input/output is shown.
+Dasarathy extends the three-Level categorization based on input/output\cite{Wilfried2002}. Actually if the input and output are considered then the input of one level comes from another level. For example, the input of feature extraction comes from raw data and the raw data produce selection of some features. So, the levels are not same anymore.  In Figure \ref{fig:InputoutputCat}, the relation between three-Level categorization and input/output is shown.
 \begin{figure}
   \centering
   \includegraphics[width=1.1\textwidth]{src/pic/InputoutputCat.png}
@@ -56,10 +56,10 @@ Dasarathy extend the three-Level categorization based on input/output\cite{Wilfr
 \end{figure}
 
 \subsection{Categorization Based on Sensor Configuration}
-Sensor fusion may be in different configuration types. According to various configuration, sensor fusion can be categorized into three sections\cite{Wilfried2002}:
+Sensor fusion may be different in configurations. According to various configurations, sensor fusion can be categorized into three sections\cite{Wilfried2002}:
 \begin{description}
-    \item[Complementary:] A configuration is considered as a complementary configuration when the sensors participating in sensor fusion are not directly dependent on each other, but it would be a case where inputs of the sensors are mixed to produce complete result. This configuration solves on of the common problem of single sensor system which is incompleteness of sensor data.
-    \item[Competitive:] Competitive configuration can be achieved by keeping multiple sensors for observing same object or view which are independent from each other. This configuration ensure high redundancy of data and that is why it is also called \emph{redundant configuration}\cite{Wilfried2002}.
+    \item[Complementary:] A configuration is considered as a complementary configuration when the participation of sensors  in sensor fusion are not directly dependent on each other, but it would be a case where inputs of the sensors are mixed to produce complete result. This configuration solves one of the common problem of single sensor system which is incompleteness of sensor data.
+    \item[Competitive:] Competitive configuration can be achieved by keeping multiple sensors for observing same object with different views which are independent from each other. This configuration ensures high redundancy of data and that is why it is also called \emph{redundant configuration}\cite{Wilfried2002}.
     \item[Cooperative:] A cooperative mechanism is the intelligent one in a sense that in this configuration the inputs from separate sensors are combined to produce a information which is not available in the single sensor inputs. An example for a cooperative sensor configuration is stereoscopic vision - by combining two-dimensional images from two cameras at slightly different viewpoints a three-dimensional image of the observed scene is derived\cite{Wilfried2002}.
 \end{description}
 
@@ -78,7 +78,7 @@ $$bel(O) = \sum_{C \subseteq O} m(C)$$
 where, $O$ is a set of elements which is the summation of all $m-$values of that set of elements denoted by $C$. As like probability theory it is not needed  to be $1$ the summation of belief in $O$ and belief in $\neg O$ which is actually less or equal to $1$, i.e., $bel(O) + bel(\neg O)\leq 1$\cite{srivastava2011introduction}. Zero belief, i.e., $bel(x) = 0$, and $bel(\neg x) = 0$ indicates the lack of proofs, also in other other word it indicates ignorance. For example, again consider the previous example $Pr_{1}$. In this case, $bel_{1}(x) = m_{1}(x) = 0.8$, $bel_{1}(\neg x) = m_{1}(\neg x) = 0.15$ and $bel_{1}(\{x, \neg x\}) = m_{1}(x) + m_{1}(\neg x) + m_{1}({x, \neg x}) = 0.8+0.15+0.5 = 1$.\\
 The fundamental operation of evidential reasoning is the orthogonal sum of evidential function (mass and belief function), which is known as Dempster's rule for combining proofs\cite{Bell_4028391}. The Dempster's rule to combine $m-$values can be written as (Shafer 1976) follows\cite{srivastava2011introduction}:
  $$m(O \neq \emptyset) = \frac{1}{k}  \sum_{O=C_{1} \cap C_{2}} m_{1}(C_{1})m_{2}(C_{2})$$
-where, $K$ is the renormalization constant and 
+where, $K$ is the re-normalization constant and 
 $$K = \sum_{C_{1} \cap C_{2} \neq \emptyset} m_{1}(C_{1})m_{2}(C_{2}) = 1-\overbrace{ \sum_{C_{1} \cap C_{2} = \emptyset} m_{1}(C_{1})m_{2}(C_{2})}^{CV}$$
 $CV$ in $K$ indicates the conflict value which is distributed among all the elements of the frame of discernment\cite{Chavez_Garcia_2016}.\\
 Generally, ET considers three situations, $\mathbb true$, $\mathbb false$ and not sure (ignorance) by which it can find solutions for ambiguous and unpredictable problems more powerfully. For example, an online shop's admin wants to know the degree of satisfaction for a delivered product $A$ from the customers. The answer from customer $C_{1}$ is $80\%$ satisfied, $15\%$ unsatisfied, $5\%$ not sure. Answer from another customer $C_{2}$ is $60\%$ satisfied, $20\%$ unsatisfied, $30\%$ not sure. Assume, a hypothesis space is, $\Omega = \{S, U\}$ where $S$ and $U$ stand for satisfiability and unsatisfiability respectively. So, we have two set of proofs for $C_{1}$ and $C_{2}$. According to ET, the combination of two proofs can be represented in Table \ref{table:customer_surv} \cite{Bell_4028391}.
@@ -199,6 +199,3 @@ The initialization part is exactly like the Kalman Filtering Algorithm. It has t
 \end{enumerate}
 After performing these 5 steps the iteration restarts again from step 1, but with $k:=k+1$.
 So, Extended Kalman Filtering Algorithm is also the same as the linear discrete KF as shown in Figure \ref{fig:kalman_cycle}\cite{bishop2001introduction}.
-
-
-

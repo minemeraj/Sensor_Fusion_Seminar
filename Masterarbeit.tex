@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt,twoside,openright]{report}
+\documentclass[a4paper,11pt,twoside,openright,openany]{report}
 
 \usepackage{graphicx}
 \usepackage{ngerman}
@@ -102,8 +102,6 @@
 
 \input{src/tex/abstract}
 
-\input{src/tex/aufgabenstellung}
-
 \tableofcontents
 
 \clearpage
@@ -116,16 +114,10 @@
 
 \input{src/tex/applications}
 
-% \input{src/tex/listings}
-
 \input{src/tex/conclusion}
 
 \bibliographystyle{abbrv}
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{src/bib/Literatur}
-
-% Begin Anhang
-% \appendix
-% \input{src/tex/appendix_docu}
 
 \end{document}
